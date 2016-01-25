@@ -13,18 +13,18 @@ struct Args_type {
 
 typedef struct Args_type Args;
 
-void print(Args args) {
-  printf("delimiter=%s fileName=%s\n", args.delimiter, args.fileName);
+void print(Args * args) {
+  printf("delimiter=%s fileName=%s\n", args->delimiter, args->fileName);
 };
 
 //---------------------------------------------------
 // Checks whether are we reading from stdin or from file
 //---------------------------------------------------
-FILE * resolveStream(Args args) {
-  if (args.fileName == NULL) {
+FILE * resolveStream(Args * args) {
+  if (args->fileName == NULL) {
     return stdin;
   } else {
-    FILE * stream = fopen(args.fileName, "r");
+    FILE * stream = fopen(args->fileName, "r");
     if (stream == NULL) {
       printf("Cannot open file, exiting.\n");
       exit(EXIT_FAILURE);
@@ -79,15 +79,15 @@ void printUsageAndExit() {
 //---------------------------------------------------
 // Process args
 //---------------------------------------------------
-void parseArguments(Args args, int argc, char **argv) {
+void parseArguments(Args * args, int argc, char **argv) {
   int opt;
   while ((opt = getopt(argc, argv, "d:f:")) != -1) {
     switch (opt) {
-      case 'd':
-        args.delimiter = optarg;
-        break;
+      case 'd':        
+        args->delimiter = optarg;
+        break;        
       case 'f':
-        args.fileName = optarg;
+        args->fileName = optarg;
         break;
       default:
         printUsageAndExit();
@@ -100,11 +100,11 @@ void parseArguments(Args args, int argc, char **argv) {
 //---------------------------------------------------
 int main(int argc, char **argv) {
   Args args;
-  parseArguments(args, argc, argv);
+  parseArguments(&args, argc, argv);
 
- // FILE *stream = resolveStream(args);
-
-  // readByLine(stream, parseLine);
-  //closeStream(stream);
-  exit(EXIT_SUCCESS);
+ FILE *stream = resolveStream(&args);
+ readByLine(stream, parseLine);
+ closeStream(stream);
+ 
+ exit(EXIT_SUCCESS);
 }
