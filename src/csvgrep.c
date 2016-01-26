@@ -79,65 +79,66 @@ void readByLine(FILE * stream, void (*callback)(char *, int)) {
 //---------------------------------------------------
 // CSV parsing
 //---------------------------------------------------
-typedef struct {
-  char delimiter;
-  int headerSize;
-  char ** headerNames;
-} CsvDescriptor;
 
-enum states { DELIMITER, IN_CELL, IN_QUOTES } state = IN_CELL;
+// typedef struct {
+//   char delimiter;
+//   int headerSize;
+//   char ** headerNames;
+// } CsvDescriptor;
 
-void parseLine(char * line, int size, CsvDescriptor * csvDescriptor) {
-  printf("Read:%s\n", line);
-  char *p;
-  int c = (unsigned char) *p;
-  char * start_of_word = p;
+// enum states { DELIMITER, IN_CELL, IN_QUOTES } state = IN_CELL;
 
-  for (p = line; *p != '\0'; p++) {
-    c = (unsigned char) *p; /* convert to unsigned char for is* functions */
-    switch (state) {
-      case IN_CELL:
-        if (c == '"') {
-          start_of_word = p + 1;
-          state = IN_QUOTES;
-          continue;
-        }
-        if (c == csvDescriptor->delimiter) {
-          state = DELIMITER;
-          //TODO process word from start_of_word to p-1          
-          continue;
-        }
-        continue; 
+// void parseLine(char * line, int size, CsvDescriptor * csvDescriptor) {
+//   printf("Read:%s\n", line);
+//   char *p;
+//   int c = (unsigned char) *p;
+//   char * start_of_word = p;
 
-      case IN_QUOTES:
-        if (c == '"') {
-          state = IN_CELL;
-          //TODO process the word from start_of_word to p-1
-          continue;
-        }
-        continue;
+//   for (p = line; *p != '\0'; p++) {
+//     c = (unsigned char) *p; /* convert to unsigned char for is* functions */
+//     switch (state) {
+//       case IN_CELL:
+//         if (c == '"') {
+//           start_of_word = p + 1;
+//           state = IN_QUOTES;
+//           continue;
+//         }
+//         if (c == csvDescriptor->delimiter) {
+//           state = DELIMITER;
+//           //TODO process word from start_of_word to p-1          
+//           continue;
+//         }
+//         continue; 
 
-      case DULL: 
-        if (c == csvDescriptor->delimiter) {
-          continue;
-        }
-        if (c == '"') {
-          state = IN_CELL;
-          start_of_word = p + 1; /* word starts at *next* char, not this one */
-          continue;
-        }
-        state = IN_CELL;
-        start_of_word = p; /* word starts here */
-        continue;
+//       case IN_QUOTES:
+//         if (c == '"') {
+//           state = IN_CELL;
+//           //TODO process the word from start_of_word to p-1
+//           continue;
+//         }
+//         continue;
 
-    }
-  }
+//       case DULL: 
+//         if (c == csvDescriptor->delimiter) {
+//           continue;
+//         }
+//         if (c == '"') {
+//           state = IN_CELL;
+//           start_of_word = p + 1; /* word starts at *next* char, not this one */
+//           continue;
+//         }
+//         state = IN_CELL;
+//         start_of_word = p; /* word starts here */
+//         continue;
 
-  if (csvDescriptor->headerSize == 0) {
-    //first run, we are initializing headers
+//     }
+//   }
 
-  }
-}
+//   if (csvDescriptor->headerSize == 0) {
+//     //first run, we are initializing headers
+
+//   }
+// }
 
 
 //---------------------------------------------------
@@ -152,14 +153,14 @@ int main(int argc, char **argv) {
  // readByLine(stream, parseLine);
  // closeStream(stream);
  //---------Tests-------
-  char * sampleCsvLines[2] = {"a;b;c", "00;11;22"};
-  //TODO make default value
-  CsvDescriptor csvDescriptor = {';', 0, null};
+  // char * sampleCsvLines[2] = {"a;b;c", "00;11;22"};
+  // //TODO make default value
+  // CsvDescriptor csvDescriptor = {';', 0, null};
   
-  for (int i = 0; i < 2; i ++) {
-    char * line = sampleCsvLines[i];
-    parseLine(line, sizeof(line), &csvDescriptor);
-  }
+  // for (int i = 0; i < 2; i ++) {
+  //   char * line = sampleCsvLines[i];
+  //   parseLine(line, sizeof(line), &csvDescriptor);
+  // }
  
  exit(EXIT_SUCCESS);
 }

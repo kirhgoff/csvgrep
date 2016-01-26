@@ -32,3 +32,7 @@ csvgrep
 
 # Debug files
 *.dSYM/
+
+#Cmake
+*.cmake
+CMakeFilesCMakeFiles/
