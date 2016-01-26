@@ -34,5 +34,5 @@ csvgrep
 *.dSYM/
 
 #Cmake
-*.cmake
 CMakeFilesCMakeFiles/
+build/
