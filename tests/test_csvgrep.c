@@ -5,16 +5,20 @@
 
 START_TEST (test_csv_parse)
 {
-        // isti_str *s = NULL;
-        // fail_if(isti_str_alloc(&s), "Could not allocate s");
-        // fail_if(!s, "s null after allocation");
-        // fail_if(s->free(&s, ISTI_OK), "Could not free s");
-        fail_if(1 != 1, "something is broken");
-
-        char * line = "1,2";
         CsvDescriptor csv;
         csv.delimiter = ',';
-        parseCsvLine(line, sizeof(line), &csv);
+        initDescriptor(&csv);
+
+        char * line = "a,b";
+        parseCsvLine(line, sizeof(line), &csv);        
+
+        fail_if(!csv.cells);
+        fail_if(!csv.cells[0]);
+        fail_if(!csv.cells[1]);
+        fail_if(strcmp(csv.cells[0], "a") == -1);
+        fail_if(!strcmp(csv.cells[1], "b") == -1);
+
+        destroyDescriptor(&csv);
 }
 END_TEST
 
