@@ -3,10 +3,10 @@
 void parseCsvLine(char * line, int size, CsvDescriptor * csvDescriptor) {
  printf("Read:%s\n", line);
  char *p;
- int c = (unsigned char) *p;
- char * start_of_word = p;
+ int c;
+ char * start_of_word;
  ParserState state = IN_CELL;
- 
+
  for (p = line; *p != '\0'; p++) {
    c = (unsigned char) *p; /* convert to unsigned char for is* functions */
    switch (state) {

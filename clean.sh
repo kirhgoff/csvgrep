@@ -8,6 +8,6 @@ rm -fr build
 mkdir build
 
 cd build
-cmake ..
-make
+cmake -DCMAKE_BUILD_TYPE:STRING=Debug ..
+make #VERBOSE=1
 ctest --output-on-failure .
