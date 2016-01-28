@@ -3,22 +3,36 @@
 
 #include "csvparse.h"
 
-START_TEST (test_csv_parse)
-{
+void check(char * actual, char ** expected) {
+        const int length = sizeof(expected)/sizeof(expected[0]);
+
         CsvDescriptor csv;
         csv.delimiter = ',';
         initDescriptor(&csv);
 
-        char * line = "a,b";
-        parseCsvLine(line, sizeof(line), &csv);        
+        parseCsvLine(actual, sizeof(actual), &csv);        
 
         fail_if(!csv.cells);
-        fail_if(!csv.cells[0]);
-        fail_if(!csv.cells[1]);
-        fail_if(strcmp(csv.cells[0], "a") == -1);
-        fail_if(!strcmp(csv.cells[1], "b") == -1);
+        for (int i =0; i < length; i++) {
+                fail_if(strcmp(csv.cells[i], expected[i]) == -1);
+        }
 
         destroyDescriptor(&csv);
+}
+
+START_TEST (test_csv_parse)
+{
+        check("", (char * []){""});
+        check(",", (char * []){"", ""});
+
+        check("a", (char * []){"a"});
+        check("a,b", (char * []){"a", "b"});
+        check("abc,bde", (char * []){"abc", "bde"});
+        check("a,b,c", (char * []){"a", "b", "c"});
+        
+        check("abc,,bde", (char * []){"abc", "", "bde"});
+
+        check("a , b", (char * []){"a ", " b"});    
 }
 END_TEST
 
