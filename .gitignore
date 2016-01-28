@@ -35,4 +35,5 @@ csvgrep
 
 #Cmake
 CMakeFilesCMakeFiles/
+CTestTestfile.cmake
 build/

@@ -79,12 +79,6 @@ void readByLine(FILE * stream, void (*callback)(char *, int)) {
 }
 
 //---------------------------------------------------
-// CSV parsing
-//---------------------------------------------------
-
-
-
-//---------------------------------------------------
 // MAIN
 //---------------------------------------------------
 int main(int argc, char **argv) {
@@ -96,14 +90,14 @@ int main(int argc, char **argv) {
  // readByLine(stream, parseLine);
  // closeStream(stream);
  //---------Tests-------
-  // char * sampleCsvLines[2] = {"a;b;c", "00;11;22"};
-  // //TODO make default value
-  // CsvDescriptor csvDescriptor = {';', 0, null};
+  char * sampleCsvLines[2] = {"a;b;c", "00;11;22"};
+  //TODO make default value
+  CsvDescriptor csvDescriptor = {';', 0, NULL};
   
-  // for (int i = 0; i < 2; i ++) {
-  //   char * line = sampleCsvLines[i];
-  //   parseLine(line, sizeof(line), &csvDescriptor);
-  // }
+  for (int i = 0; i < 2; i ++) {
+    char * line = sampleCsvLines[i];
+    parseCsvLine(line, sizeof(line), &csvDescriptor);
+  }
  
  exit(EXIT_SUCCESS);
 }
