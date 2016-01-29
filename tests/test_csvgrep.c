@@ -4,35 +4,33 @@
 #include "csvparse.h"
 
 void check(char * actual, char ** expected) {
-        const int length = sizeof(expected)/sizeof(expected[0]);
+        const int length = sizeof(expected) / sizeof(expected[0]);
 
         CsvDescriptor csv;
         csv.delimiter = ',';
         initDescriptor(&csv);
 
-        parseCsvLine(actual, sizeof(actual), &csv);        
+        parseCsvLine(actual, sizeof(actual), &csv);
 
         fail_if(!csv.cells);
-        for (int i =0; i < length; i++) {
+        for (int i = 0; i < length; i++) {
                 fail_if(strcmp(csv.cells[i], expected[i]) == -1);
         }
-
         destroyDescriptor(&csv);
 }
 
-START_TEST (test_csv_parse)
-{
-        check("", (char * []){""});
-        check(",", (char * []){"", ""});
+START_TEST (test_csv_parse) {
+        check("", (char * []) {""});
+        check(",", (char * []) {"", ""});
 
-        check("a", (char * []){"a"});
-        check("a,b", (char * []){"a", "b"});
-        check("abc,bde", (char * []){"abc", "bde"});
-        check("a,b,c", (char * []){"a", "b", "c"});
-        
-        check("abc,,bde", (char * []){"abc", "", "bde"});
+        check("a", (char * []) {"a"});
+        check("a,b", (char * []) {"a", "b"});
+        check("abc,bde", (char * []) {"abc", "bde"});
+        check("a,b,c", (char * []) {"a", "b", "c"});
 
-        check("a , b", (char * []){"a ", " b"});    
+        check("abc,,bde", (char * []) {"abc", "", "bde"});
+
+        check("a , b", (char * []) {"a ", " b"});
 }
 END_TEST
 

@@ -9,9 +9,12 @@
 // Arguments parsing
 //---------------------------------------------------
 
+#define DEFAULT_DELIMITER ";"
+
 typedef struct  {
   char * delimiter;
   char * fileName;
+  char * expression;
 }  Args;
 
 void printArgs(Args * args) {
@@ -25,21 +28,26 @@ void printUsageAndExit() {
 
 void parseArguments(Args * args, int argc, char **argv) {
   int opt;
-  while ((opt = getopt(argc, argv, "d:f:")) != -1) {
+  while ((opt = getopt(argc, argv, "d:f:e:")) != -1) {
     switch (opt) {
-      case 'd':        
-        args->delimiter = optarg;
-        break;        
-      case 'f':
-        args->fileName = optarg;
-        break;
-      default:
-        printUsageAndExit();
+    case 'd':
+      args->delimiter = optarg;
+      break;
+    case 'f':
+      args->fileName = optarg;
+      break;
+    case 'e':
+      args->expression = optarg;
+      break;
+    default:
+      printUsageAndExit();
     }
   }
-  printArgs(args);
+  if (args->delimiter == NULL) {
+    args->delimiter = DEFAULT_DELIMITER;
+  }
+  //printArgs(args);
 }
-
 
 //---------------------------------------------------
 // Methods to work with streams
@@ -64,15 +72,13 @@ void closeStream(FILE * stream) {
   }
 }
 
-void readByLine(FILE * stream, void (*callback)(char *, int)) {
+void readByLine(FILE * stream, void (*callback)(char *, int, CsvDescriptor*), CsvDescriptor * csv) {
   char *line = NULL;
   size_t len = 0;
   ssize_t read;
 
   while ((read = getline(&line, &len, stream)) != -1) {
-    // printf("Retrieved line of length %zu :\n", read);
-    // printf("%s", line);
-    (*callback)(line, read);
+    (*callback)(line, read, csv);
   }
 
   free(line);
@@ -82,22 +88,14 @@ void readByLine(FILE * stream, void (*callback)(char *, int)) {
 // MAIN
 //---------------------------------------------------
 int main(int argc, char **argv) {
-  //----- Working part
-  // Args args;
-  // parseArguments(&args, argc, argv);
+  Args args;
+  parseArguments(&args, argc, argv);
+  //TODO add macros for csvparse
+  CsvDescriptor csv = {*args.delimiter, 0, NULL, NULL};
 
- // FILE *stream = resolveStream(&args);
- // readByLine(stream, parseLine);
- // closeStream(stream);
- //---------Tests-------
-  char * sampleCsvLines[2] = {"a;b;c", "00;11;22"};
-  //TODO make default value
-  CsvDescriptor csvDescriptor = {';', 0, NULL};
-  
-  for (int i = 0; i < 2; i ++) {
-    char * line = sampleCsvLines[i];
-    parseCsvLine(line, sizeof(line), &csvDescriptor);
-  }
- 
- exit(EXIT_SUCCESS);
+  FILE *stream = resolveStream(&args);
+  readByLine(stream, parseCsvLine, &csv);
+  closeStream(stream);
+
+  exit(EXIT_SUCCESS);
 }

@@ -9,11 +9,11 @@
 #define MAX_CELL_SIZE 255
 
 typedef struct {
-   char delimiter;
-   int headerSize;
-   char ** headers;
-   char ** cells;
- } CsvDescriptor;
+	char delimiter;
+	int headerSize;
+	char ** headers;
+	char ** cells;
+} CsvDescriptor;
 
 typedef enum { DELIMITER, IN_CELL } ParserState;
 

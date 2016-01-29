@@ -3,29 +3,29 @@
 //------------------------------------------
 // Allocates memory buffer for descriptor
 //------------------------------------------
-void initDescriptor(CsvDescriptor * csvDescriptor) {
-  //TODO extract function
-  csvDescriptor->cells = calloc(MAX_CELLS, sizeof(char*));
-  for (int i = 0; i < MAX_CELLS; i++) 
-    csvDescriptor->cells[i] = calloc(MAX_CELL_SIZE, sizeof(char));
+char ** initCellsStorage () {
+  char ** pointer = calloc(MAX_CELLS, sizeof(char*));
+  for (int i = 0; i < MAX_CELLS; i++)
+    pointer[i] = calloc(MAX_CELL_SIZE, sizeof(char));
+  return pointer;
+}
 
-  csvDescriptor->headers = calloc(MAX_CELLS, sizeof(char*));
-  for (int i = 0; i < MAX_CELLS; i++) 
-    csvDescriptor->cells[i] = calloc(MAX_CELL_SIZE, sizeof(char));
+void initDescriptor(CsvDescriptor * csvDescriptor) {
+  csvDescriptor->cells = initCellsStorage();
+  csvDescriptor->headers = initCellsStorage();
 }
 
 //------------------------------------------
 // Free memory buffer for descriptor
 //------------------------------------------
-void destroyDescriptor(CsvDescriptor * csvDescriptor) {
-  //TODO extract function
-  for (int i = 0; i < MAX_CELLS; i++) 
-    free(csvDescriptor->cells[i]);
-  free(csvDescriptor->cells);
+void freeCellsStorage(char ** pointer) {
+  for (int i = 0; i < MAX_CELLS; i++) free(pointer[i]);
+  free(pointer);
+}
 
-  for (int i = 0; i < MAX_CELLS; i++) 
-    free(csvDescriptor->headers[i]);
-  free(csvDescriptor->headers);
+void destroyDescriptor(CsvDescriptor * csvDescriptor) {
+  freeCellsStorage(csvDescriptor->cells);
+  freeCellsStorage(csvDescriptor->headers);
 }
 
 //------------------------------------------
@@ -39,26 +39,26 @@ void parseCsvLine(char * line, int size, CsvDescriptor * csvDescriptor) {
   ParserState state = IN_CELL;
 
   int cellIndex = 0;
-  
-  for (p = line; *p != '\0'; p++) {
-    c = (unsigned char) *p; 
-    switch (state) {
-      case IN_CELL:
-        if (c == csvDescriptor->delimiter) {
-          state = DELIMITER;
-          memcpy(csvDescriptor->cells[cellIndex], wordStart, p - wordStart);
-          continue;
-        }
-        continue; 
 
-      case DELIMITER: 
-        if (c == csvDescriptor->delimiter) {
-          continue;
-        } 
-        state = IN_CELL;
-        wordStart = p; 
-        cellIndex ++;
+  for (p = line; *p != '\0'; p++) {
+    c = (unsigned char) * p;
+    switch (state) {
+    case IN_CELL:
+      if (c == csvDescriptor->delimiter) {
+        state = DELIMITER;
+        memcpy(csvDescriptor->cells[cellIndex], wordStart, p - wordStart);
         continue;
+      }
+      continue;
+
+    case DELIMITER:
+      if (c == csvDescriptor->delimiter) {
+        continue;
+      }
+      state = IN_CELL;
+      wordStart = p;
+      cellIndex ++;
+      continue;
     }
   }
   //Complete last word
