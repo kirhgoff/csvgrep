@@ -58,7 +58,7 @@ START_TEST(test_expparse_node) {
 }
 END_TEST
 
-/*
+
 START_TEST(test_stack) {
   ExpressionNode * a = createNode(TERMINAL, "a");
   ExpressionNode * b = createNode(TERMINAL, "b");
@@ -89,7 +89,7 @@ START_TEST(test_stack) {
   destroyStack(stack);
 }
 END_TEST
-*/
+
 
 Suite* str_suite (void) {
   TCase *tcase = tcase_create("case");

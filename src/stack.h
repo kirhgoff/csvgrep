@@ -1,5 +1,5 @@
-# ifndef EXP_PARSE_H
-# define EXP_PARSE_H
+# ifndef STACK_H
+# define STACK_H
 
 #include <stdbool.h>
 #include "expparse.h"
@@ -8,7 +8,7 @@
 
 typedef struct ExpressionNode StackItem;
 
-typedef struct _Stack {
+typedef struct {
   StackItem ** data;
   int currentIndex;
 } Stack;
