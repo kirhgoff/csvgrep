@@ -21,7 +21,7 @@ bool equals(ExpressionNode * first, ExpressionNode * second) {
   if (first->type != second->type) return false;
   if (first->label == second->label) return true;
   if (first->label == NULL || second->label == NULL) return false;
-  if (strcmp(first->label, second->label) == -1) return false;
+  if (strcmp(first->label, second->label) != 0) return false;
 
   return true;
 };

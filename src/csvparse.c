@@ -32,7 +32,7 @@ void destroyDescriptor(CsvDescriptor * csvDescriptor) {
 // Parses a line into descriptor's internal buffer
 //------------------------------------------
 void parseCsvLine(char * line, int size, CsvDescriptor * csvDescriptor) {
-  printf("Read:%s\n", line);
+  //printf("Read:%s\n", line);
   char *p;
   int c;
   char * wordStart = line;

@@ -58,6 +58,7 @@ START_TEST(test_expparse_node) {
 }
 END_TEST
 
+/*
 START_TEST(test_stack) {
   ExpressionNode * a = createNode(TERMINAL, "a");
   ExpressionNode * b = createNode(TERMINAL, "b");
@@ -88,13 +89,15 @@ START_TEST(test_stack) {
   destroyStack(stack);
 }
 END_TEST
+*/
 
 Suite* str_suite (void) {
-  Suite *suite = suite_create("csvparse");
   TCase *tcase = tcase_create("case");
   tcase_add_test(tcase, test_csv_parse);
   tcase_add_test(tcase, test_expparse_node);
-  tcase_add_test(tcase, test_stack);
+  //tcase_add_test(tcase, test_stack);
+
+  Suite *suite = suite_create("csvparse");
   suite_add_tcase(suite, tcase);
   return suite;
 }
