@@ -1,4 +1,6 @@
 include_directories(.)
+add_library(error error.c)
 add_library(csvgrep csvgrep.c)
 add_library(csvparse csvparse.c)
 add_library(expparse expparse.c)
+add_library(stack stack.c)

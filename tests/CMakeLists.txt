@@ -1,7 +1,7 @@
 enable_testing()
 find_package(Check REQUIRED)
 include_directories(${CHECK_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${CHECK_LIBRARIES} csvparse csvgrep expparse)
+set(LIBS ${LIBS} ${CHECK_LIBRARIES} csvparse csvgrep expparse stack error)
 
 include_directories(. ../src)
 

@@ -1,18 +1,41 @@
 # ifndef EXP_PARSE_H
 # define EXP_PARSE_H
 
-typedef enum { VALUE, COMPARISON, LOGICAL, CONST } NodeType;
+#include <stdbool.h>
 
-//TODO think about pattern visitor here
+/*
+ EXPRESSIONS
+ 
+ market='FX'
+ market='FX' AND underlyingCode='USD' AND currentPrice=''
+ underlyingCode='USD' OR underlyingCode='EUR'
+ market='FX' AND (underlyingCode='USD' OR underlyingCode='EUR')
+ 
+ GRAMMAR
+
+ E -> P B P
+ P -> t | "(" E ")"  
+ B -> "AND" | "OR" | "="
+
+*/
+
+typedef enum { TERMINAL, COMPARISON, LOGICAL } NodeType;
+
 typedef struct _ExpressionNode {
   NodeType type;
-  char * value;
-  char * (*evalFunc)(struct _ExpressionNode * node);
+  char * label;
 
   struct _ExpressionNode * parent;
-
-  int childrenSize;
   struct _ExpressionNode ** children;
+  int childrenSize;
+
+  char * (*evalFunc)(struct _ExpressionNode * node);
+
 } ExpressionNode;
+
+ExpressionNode * createNode(NodeType type, char * label);
+void destroyNode(ExpressionNode * node);
+
+bool equals(ExpressionNode * first, ExpressionNode * second);
 
 # endif
