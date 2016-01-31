@@ -6,7 +6,7 @@
 
 # define MAX_STACK_SIZE 255
 
-typedef struct ExpressionNode StackItem;
+typedef ExpressionNode StackItem;
 
 typedef struct {
   StackItem ** data;
