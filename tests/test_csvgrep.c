@@ -90,12 +90,17 @@ START_TEST(test_stack) {
 }
 END_TEST
 
+// START_TEST(test_expparse) {
+
+// }
+// END_TEST
 
 Suite* str_suite (void) {
   TCase *tcase = tcase_create("case");
   tcase_add_test(tcase, test_csv_parse);
   tcase_add_test(tcase, test_expparse_node);
-  //tcase_add_test(tcase, test_stack);
+  tcase_add_test(tcase, test_stack);
+  //tcase_add_test(tcase, test_expparse);
 
   Suite *suite = suite_create("csvparse");
   suite_add_tcase(suite, tcase);

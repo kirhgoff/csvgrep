@@ -4,6 +4,7 @@
 #include <getopt.h>
 
 #include "csvparse.h"
+#include "error.h"
 
 //---------------------------------------------------
 // Arguments parsing
@@ -59,8 +60,7 @@ FILE * resolveStream(Args * args) {
   } else {
     FILE * stream = fopen(args->fileName, "r");
     if (stream == NULL) {
-      printf("Cannot open file, exiting.\n");
-      exit(EXIT_FAILURE);
+      quit("Cannot open file, exiting.\n");
     }
     return stream;
   }
@@ -90,7 +90,7 @@ void readByLine(FILE * stream, void (*callback)(char *, int, CsvDescriptor*), Cs
 int main(int argc, char **argv) {
   Args args;
   parseArguments(&args, argc, argv);
-  //TODO add macros for csvparse
+  //TODO add macros for csvparse init
   CsvDescriptor csv = {*args.delimiter, 0, NULL, NULL};
 
   FILE *stream = resolveStream(&args);

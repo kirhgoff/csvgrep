@@ -1,8 +1,9 @@
 # ifndef EXP_PARSE_H
 # define EXP_PARSE_H
 
-#include <stdbool.h>
+# include <stdbool.h>
 
+# define MAX_TOKENS 1024
 /*
  EXPRESSIONS
  
@@ -19,7 +20,26 @@
 
 */
 
-typedef enum { TERMINAL, COMPARISON, LOGICAL } NodeType;
+typedef enum { TERMINAL, COMPARISON, LOGICAL, BRACE } NodeType;
+
+//These two arrays should correspond each other
+# define LEXEMS_COUNT 5 
+
+static const char* LEXEMS[LEXEMS_COUNT] = {
+  "=", // COMPARISON
+  "AND", //LOGICAL
+  "OR", //LOGICAL
+  "(", //BRACE
+  ")", //BRACE  
+};
+
+static const NodeType LEXEM_TYPES[LEXEMS_COUNT] = {
+  COMPARISON, //"=" 
+  LOGICAL, //"AND"
+  LOGICAL, //"OR"
+  BRACE, //"("
+  BRACE //")"
+};
 
 typedef struct _ExpressionNode {
   NodeType type;
@@ -33,9 +53,14 @@ typedef struct _ExpressionNode {
 
 } ExpressionNode;
 
+typedef enum { LEXEM, VAR } ExpParserState;
+
 ExpressionNode * createNode(NodeType type, char * label);
 void destroyNode(ExpressionNode * node);
 
 bool equals(ExpressionNode * first, ExpressionNode * second);
+
+bool prefix(const char *pre, const char *str);
+ExpressionNode ** parseLexems(char * query);
 
 # endif
