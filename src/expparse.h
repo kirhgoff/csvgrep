@@ -61,6 +61,6 @@ bool equals(ExpressionNode * first, ExpressionNode * second);
 
 bool prefix(const char *pre, const char *str);
 ExpressionNode ** parseLexems(char * query);
-int consumeLexem(char * p, ExpressionNode ** lexems, int index);
+int detectLexem(char * p);
 
 # endif

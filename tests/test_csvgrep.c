@@ -90,17 +90,28 @@ START_TEST(test_stack) {
 }
 END_TEST
 
-// START_TEST(test_expparse) {
+void checkLexem(ExpressionNode ** lexems, int index, char * label, NodeType type) {
+  fail_if(lexems[index] == NULL);
+  fail_if(strcmp(lexems[index]->label, label) != 0);
+  fail_if(lexems[index]->type != type);
+}
 
-// }
-// END_TEST
+START_TEST(test_expparse) {
+  char * input = "a=2";
+  ExpressionNode ** lexems = parseLexems(input);
+  checkLexem(lexems, 0, "a", TERMINAL);
+  checkLexem(lexems, 1, "=", COMPARISON);
+  checkLexem(lexems, 2, "2", TERMINAL);
+  //TODO destroy nodes
+}
+END_TEST
 
 Suite* str_suite (void) {
   TCase *tcase = tcase_create("case");
   tcase_add_test(tcase, test_csv_parse);
   tcase_add_test(tcase, test_expparse_node);
   tcase_add_test(tcase, test_stack);
-  //tcase_add_test(tcase, test_expparse);
+  tcase_add_test(tcase, test_expparse);
 
   Suite *suite = suite_create("csvparse");
   suite_add_tcase(suite, tcase);

@@ -32,6 +32,7 @@ ExpressionNode ** parseLexems(char * query) {
   ExpressionNode ** lexems = calloc(MAX_TOKENS, sizeof(ExpressionNode*));
   int index = 0;
   int c;
+  int ordinal = -1;
   char * p = query;
   char * varStart = NULL;
   ExpParserState state = EXP_DELIMITER;
@@ -43,10 +44,12 @@ ExpressionNode ** parseLexems(char * query) {
         if (c == ' ') {
           continue;
         }
-        int shift = consumeLexem(p, lexems, index);
-        if (shift > 0) {
+        ordinal = detectLexem(p);
+        if (ordinal != -1) {
+          const char * lexem = LEXEMS[ordinal];
+          lexems[index] = createNode(LEXEM_TYPES[ordinal], lexem);
           index ++;
-          p += shift;          
+          p += sizeof(lexem);          
         } else {
           state = VAR;
           varStart = p;
@@ -59,6 +62,23 @@ ExpressionNode ** parseLexems(char * query) {
           lexems[index] = createNode(TERMINAL, var);
           index ++;
           state = EXP_DELIMITER;
+          continue;
+        }
+        ordinal = detectLexem(p);
+        if (ordinal != -1) {
+          //consume var
+          char * var = calloc(p - varStart, sizeof(char));
+          memcpy(varStart, var, p - 1 - varStart);
+          lexems[index] = createNode(TERMINAL, var);
+          index ++;
+
+          //consume lexem
+          const char * lexem = LEXEMS[ordinal];
+          lexems[index] = createNode(LEXEM_TYPES[ordinal], lexem);
+          index ++;
+          p += sizeof(lexem);          
+
+          state = EXP_DELIMITER;
         }
         continue;
     }
@@ -66,16 +86,13 @@ ExpressionNode ** parseLexems(char * query) {
   return lexems;
 }
 
-int consumeLexem(char * p, ExpressionNode ** lexems, int index) {
+int detectLexem(char * p) {
   for (int i = 0; i < LEXEMS_COUNT; i ++) {
     if (prefix(LEXEMS[i], p)) {
-
-      lexems[index] = createNode(LEXEM_TYPES[i], LEXEMS[i]);
-      int length = sizeof(LEXEM_TYPES[i]);
-      return length;
+      return i;
     }
   }
-  return 0;
+  return -1;
 }
 
 bool prefix(const char *pre, const char *str) {
