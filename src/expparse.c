@@ -2,11 +2,12 @@
 # include "expparse.h"
 # include "error.h"
 
-
+//TODO add another method to copy from pointer
 ExpressionNode * createNode(NodeType type, const char * label) {
   ExpressionNode * node = calloc(1, sizeof(ExpressionNode));
   node->type = type;
-  node->label = label;
+  node->label = calloc(MAX_TOKEN_LENGTH, sizeof(char));
+  memcpy(node->label, label, strlen(label));
   return node;
 };
 
@@ -57,8 +58,9 @@ ExpressionNode ** parseLexems(char * query) {
         continue;
       case VAR:
         if (c == ' ') {
+          //consume var
           char * var = calloc(p - varStart, sizeof(char));
-          memcpy(varStart, var, p - 1 - varStart);
+          memcpy(var, varStart, p - varStart);
           lexems[index] = createNode(TERMINAL, var);
           index ++;
           state = EXP_DELIMITER;
@@ -68,7 +70,7 @@ ExpressionNode ** parseLexems(char * query) {
         if (ordinal != -1) {
           //consume var
           char * var = calloc(p - varStart, sizeof(char));
-          memcpy(varStart, var, p - 1 - varStart);
+          memcpy(var, varStart, p - varStart);
           lexems[index] = createNode(TERMINAL, var);
           index ++;
 
@@ -82,6 +84,13 @@ ExpressionNode ** parseLexems(char * query) {
         }
         continue;
     }
+  }
+
+  //consume last var
+  if (state == VAR) {
+    char * var = calloc(p - varStart, sizeof(char));
+    memcpy(var, varStart, p - varStart);
+    lexems[index] = createNode(TERMINAL, var);
   }
   return lexems;
 }

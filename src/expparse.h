@@ -4,6 +4,7 @@
 # include <stdbool.h>
 
 # define MAX_TOKENS 1024
+# define MAX_TOKEN_LENGTH 255
 /*
  EXPRESSIONS
  
@@ -44,7 +45,7 @@ static const NodeType LEXEM_TYPES[LEXEMS_COUNT] = {
 
 typedef struct _ExpressionNode {
   NodeType type;
-  const char * label;
+  char * label;
 
   struct _ExpressionNode * parent;
   struct _ExpressionNode ** children;
