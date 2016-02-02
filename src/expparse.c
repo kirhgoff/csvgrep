@@ -3,7 +3,7 @@
 # include "error.h"
 
 
-ExpressionNode * createNode(NodeType type, char * label) {
+ExpressionNode * createNode(NodeType type, const char * label) {
   ExpressionNode * node = calloc(1, sizeof(ExpressionNode));
   node->type = type;
   node->label = label;
@@ -31,27 +31,51 @@ bool equals(ExpressionNode * first, ExpressionNode * second) {
 ExpressionNode ** parseLexems(char * query) {
   ExpressionNode ** lexems = calloc(MAX_TOKENS, sizeof(ExpressionNode*));
   int index = 0;
-  char * p;
-  char * varStart = query;
+  int c;
+  char * p = query;
+  char * varStart = NULL;
+  ExpParserState state = EXP_DELIMITER;
+
   for (p = query; *p != '\0'; p++) {
-    if (p[0] == ' ') {
-      varStart = p + 1;
-      continue;
-    }
-    for (int i = 0; i < LEXEMS_COUNT; i ++) {
-      if (prefix(LEXEMS[i], p)) {
-        lexems[index] = createNode(LEXEMS_TYPE[i], LEXEMS[i]);
-        index ++;
-        p += sizeof(LEXEMS_TYPE[i])
-        varStart = p + 1;
+    c = (unsigned char) * p;
+    switch (state) {
+      case EXP_DELIMITER:
+        if (c == ' ') {
+          continue;
+        }
+        int shift = consumeLexem(p, lexems, index);
+        if (shift > 0) {
+          index ++;
+          p += shift;          
+        } else {
+          state = VAR;
+          varStart = p;
+        }
         continue;
-      }
+      case VAR:
+        if (c == ' ') {
+          char * var = calloc(p - varStart, sizeof(char));
+          memcpy(varStart, var, p - 1 - varStart);
+          lexems[index] = createNode(TERMINAL, var);
+          index ++;
+          state = EXP_DELIMITER;
+        }
+        continue;
     }
-
-
-
   }
   return lexems;
+}
+
+int consumeLexem(char * p, ExpressionNode ** lexems, int index) {
+  for (int i = 0; i < LEXEMS_COUNT; i ++) {
+    if (prefix(LEXEMS[i], p)) {
+
+      lexems[index] = createNode(LEXEM_TYPES[i], LEXEMS[i]);
+      int length = sizeof(LEXEM_TYPES[i]);
+      return length;
+    }
+  }
+  return 0;
 }
 
 bool prefix(const char *pre, const char *str) {

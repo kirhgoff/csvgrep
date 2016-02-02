@@ -21,6 +21,7 @@
 */
 
 typedef enum { TERMINAL, COMPARISON, LOGICAL, BRACE } NodeType;
+typedef enum { EXP_DELIMITER, VAR } ExpParserState;
 
 //These two arrays should correspond each other
 # define LEXEMS_COUNT 5 
@@ -43,7 +44,7 @@ static const NodeType LEXEM_TYPES[LEXEMS_COUNT] = {
 
 typedef struct _ExpressionNode {
   NodeType type;
-  char * label;
+  const char * label;
 
   struct _ExpressionNode * parent;
   struct _ExpressionNode ** children;
@@ -53,14 +54,13 @@ typedef struct _ExpressionNode {
 
 } ExpressionNode;
 
-typedef enum { LEXEM, VAR } ExpParserState;
-
-ExpressionNode * createNode(NodeType type, char * label);
+ExpressionNode * createNode(NodeType type, const char * label);
 void destroyNode(ExpressionNode * node);
 
 bool equals(ExpressionNode * first, ExpressionNode * second);
 
 bool prefix(const char *pre, const char *str);
 ExpressionNode ** parseLexems(char * query);
+int consumeLexem(char * p, ExpressionNode ** lexems, int index);
 
 # endif
