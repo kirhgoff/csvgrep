@@ -102,7 +102,7 @@ START_TEST(test_expparse) {
   checkLexem(lexems, 0, "a", TERMINAL);
   checkLexem(lexems, 1, "=", COMPARISON);
   checkLexem(lexems, 2, "2", TERMINAL);
-  //TODO destroy nodes
+  destroyLexems(lexems);
 }
 END_TEST
 
@@ -118,7 +118,7 @@ START_TEST(test_expparse2) {
   checkLexem(lexems, 6, "b", TERMINAL);
   checkLexem(lexems, 7, "=", COMPARISON);
   checkLexem(lexems, 8, "bbb", TERMINAL);
-  //TODO destroy nodes
+  destroyLexems(lexems);
 }
 END_TEST
 

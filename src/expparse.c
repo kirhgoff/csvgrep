@@ -91,6 +91,14 @@ ExpressionNode ** parseLexems(char * query) {
   return lexems;
 }
 
+void destroyLexems(ExpressionNode ** lexems) {
+  ExpressionNode ** current;
+  for (current = lexems; *current != NULL; current++) {
+    destroyNode(*current);
+  }
+  free (lexems);  
+}
+
 ExpressionNode * createVar(char * end, char * start) {
   char * var = calloc(end - start, sizeof(char));
   memcpy(var, start, end - start);
