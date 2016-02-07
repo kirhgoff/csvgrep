@@ -106,12 +106,30 @@ START_TEST(test_expparse) {
 }
 END_TEST
 
+START_TEST(test_expparse2) {
+  char * input = "(a=aaa) AND b=bbb";
+  ExpressionNode ** lexems = parseLexems(input);
+  checkLexem(lexems, 0, "(", BRACE);
+  checkLexem(lexems, 1, "a", TERMINAL);
+  checkLexem(lexems, 2, "=", COMPARISON);
+  checkLexem(lexems, 3, "aaa", TERMINAL);
+  checkLexem(lexems, 4, ")", BRACE);
+  checkLexem(lexems, 5, "AND", LOGICAL);
+  checkLexem(lexems, 6, "b", TERMINAL);
+  checkLexem(lexems, 7, "=", COMPARISON);
+  checkLexem(lexems, 8, "bbb", TERMINAL);
+  //TODO destroy nodes
+}
+END_TEST
+
+
 Suite* str_suite (void) {
   TCase *tcase = tcase_create("case");
   tcase_add_test(tcase, test_csv_parse);
   tcase_add_test(tcase, test_expparse_node);
   tcase_add_test(tcase, test_stack);
   tcase_add_test(tcase, test_expparse);
+  tcase_add_test(tcase, test_expparse2);
 
   Suite *suite = suite_create("csvparse");
   suite_add_tcase(suite, tcase);

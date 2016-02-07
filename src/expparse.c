@@ -49,7 +49,7 @@ ExpressionNode ** parseLexems(char * query) {
         if (ordinal != -1) {
           lexems[index] = createNode(LEXEM_TYPES[ordinal], LEXEMS[ordinal]);
           index ++;
-          p += strlen(LEXEMS[ordinal]);
+          p += strlen(LEXEMS[ordinal])-1;
           //state keeps the same          
         } else {
           state = VAR;
