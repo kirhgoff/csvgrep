@@ -47,10 +47,10 @@ ExpressionNode ** parseLexems(char * query) {
         }
         ordinal = detectLexem(p);
         if (ordinal != -1) {
-          const char * lexem = LEXEMS[ordinal];
-          lexems[index] = createNode(LEXEM_TYPES[ordinal], lexem);
+          lexems[index] = createNode(LEXEM_TYPES[ordinal], LEXEMS[ordinal]);
           index ++;
-          p += sizeof(lexem);          
+          p += strlen(LEXEMS[ordinal]);
+          //state keeps the same          
         } else {
           state = VAR;
           varStart = p;
@@ -59,9 +59,7 @@ ExpressionNode ** parseLexems(char * query) {
       case VAR:
         if (c == ' ') {
           //consume var
-          char * var = calloc(p - varStart, sizeof(char));
-          memcpy(var, varStart, p - varStart);
-          lexems[index] = createNode(TERMINAL, var);
+          lexems[index] = createVar(p, varStart);
           index ++;
           state = EXP_DELIMITER;
           continue;
@@ -69,16 +67,14 @@ ExpressionNode ** parseLexems(char * query) {
         ordinal = detectLexem(p);
         if (ordinal != -1) {
           //consume var
-          char * var = calloc(p - varStart, sizeof(char));
-          memcpy(var, varStart, p - varStart);
-          lexems[index] = createNode(TERMINAL, var);
+          lexems[index] = createVar(p, varStart);
           index ++;
 
           //consume lexem
           const char * lexem = LEXEMS[ordinal];
           lexems[index] = createNode(LEXEM_TYPES[ordinal], lexem);
           index ++;
-          p += sizeof(lexem);          
+          p += strlen(lexem) - 1; //Should point at the end of lexem          
 
           state = EXP_DELIMITER;
         }
@@ -93,6 +89,12 @@ ExpressionNode ** parseLexems(char * query) {
     lexems[index] = createNode(TERMINAL, var);
   }
   return lexems;
+}
+
+ExpressionNode * createVar(char * end, char * start) {
+  char * var = calloc(end - start, sizeof(char));
+  memcpy(var, start, end - start);
+  return createNode(TERMINAL, var);
 }
 
 int detectLexem(char * p) {

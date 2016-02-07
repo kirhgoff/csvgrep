@@ -39,3 +39,6 @@ CTestTestfile.cmake
 build/
 Testing/
 
+#Idea
+.idea/
+
